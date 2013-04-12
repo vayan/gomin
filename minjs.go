@@ -31,10 +31,10 @@ func get() byte {
 			c = 0
 		}
 	}
-	if (c >= ' ' || c == '\n' || c == 0) {
+	if c >= ' ' || c == '\n' || c == 0 {
 		return c
 	}
-	if (c == '\r') {
+	if c == '\r' {
 		return '\n'
 	}
 	return ' '
@@ -47,7 +47,7 @@ func peek() byte {
 
 func next() (byte, error) {
 	var c byte = get()
-	if (c == '/') {
+	if c == '/' {
 		switch peek() {
 		case '/':
 			for {
@@ -82,7 +82,7 @@ func action(d int) error {
 		if (theY == '\n' || theY == ' ') &&
 			(theA == '+' || theA == '-' || theA == '*' || theA == '/') &&
 			(theB == '+' || theB == '-' || theB == '*' || theB == '/') {
-				output = append(output, theY)
+			output = append(output, theY)
 		}
 	}
 	if d <= 2 {
@@ -111,56 +111,56 @@ func action(d int) error {
 		}
 		if theB == '/' &&
 			(theA == '(' || theA == ',' || theA == '=' || theA == ':' ||
-			theA == '[' || theA == '!' || theA == '&' || theA == '|' ||
-			theA == '?' || theA == '+' || theA == '-' || theA == '~' ||
-			theA == '*' || theA == '/' || theA == '{' || theA == '\n') {
-				output = append(output, theA)
-				if theA == '/' || theA == '*' {
-					output = append(output, ' ')
-				}
-				output = append(output, theB)
-				for {
-					theA = get()
-					if theA == '[' {
-						for {
-							output = append(output, theA)
-							theA = get()
-							if theA == ']' {
-								break
-							}
-							if theA == '\\' {
-								output = append(output, theA)
-								theA = get()
-							}
-							if theA == 0 {
-								return errors.New("Unterminated set in Regular Expression literal.")
-							}
-						}
-					} else if theA == '/' {
-						switch peek() {
-						case '/', '*':
-							return errors.New("Unterminated set in Regular Expression literal.")
-						}
-						break
-					} else if theA == '\\' {
+				theA == '[' || theA == '!' || theA == '&' || theA == '|' ||
+				theA == '?' || theA == '+' || theA == '-' || theA == '~' ||
+				theA == '*' || theA == '/' || theA == '{' || theA == '\n') {
+			output = append(output, theA)
+			if theA == '/' || theA == '*' {
+				output = append(output, ' ')
+			}
+			output = append(output, theB)
+			for {
+				theA = get()
+				if theA == '[' {
+					for {
 						output = append(output, theA)
 						theA = get()
+						if theA == ']' {
+							break
+						}
+						if theA == '\\' {
+							output = append(output, theA)
+							theA = get()
+						}
+						if theA == 0 {
+							return errors.New("Unterminated set in Regular Expression literal.")
+						}
 					}
-					if theA == 0 {
+				} else if theA == '/' {
+					switch peek() {
+					case '/', '*':
 						return errors.New("Unterminated set in Regular Expression literal.")
 					}
+					break
+				} else if theA == '\\' {
 					output = append(output, theA)
+					theA = get()
 				}
-				theB, err = next()
-				if err != nil {
-					return err
+				if theA == 0 {
+					return errors.New("Unterminated set in Regular Expression literal.")
 				}
+				output = append(output, theA)
+			}
+			theB, err = next()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func jsmin(s []byte) ([]byte, error) {
+func MinJS(s []byte) ([]byte, error) {
 	input = s
 	if peek() == 0xEF {
 		get()
@@ -175,19 +175,19 @@ func jsmin(s []byte) ([]byte, error) {
 	for theA != 0 {
 		switch theA {
 		case ' ':
-			if isalnum(theB){
+			if isalnum(theB) {
 				err = action(1)
 			} else {
 				err = action(2)
 			}
 		case '\n':
-			switch (theB) {
+			switch theB {
 			case '{', '[', '(', '+', '-', '!', '~':
 				err = action(1)
 			case ' ':
 				err = action(3)
 			default:
-				if isalnum(theB){
+				if isalnum(theB) {
 					err = action(1)
 				} else {
 					err = action(2)
@@ -196,7 +196,7 @@ func jsmin(s []byte) ([]byte, error) {
 		default:
 			switch theB {
 			case ' ':
-				if isalnum(theA){
+				if isalnum(theA) {
 					err = action(1)
 				} else {
 					err = action(3)
@@ -206,7 +206,7 @@ func jsmin(s []byte) ([]byte, error) {
 				case '}', ']', ')', '+', '-', '"', '\'', '`':
 					err = action(1)
 				default:
-					if isalnum(theA){
+					if isalnum(theA) {
 						err = action(1)
 					} else {
 						err = action(3)
