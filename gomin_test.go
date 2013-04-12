@@ -20,6 +20,6 @@ func Test_Minimizejs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	min_c := MinJS(content)
+	min_c, _ := MinJS(content)
 	ioutil.WriteFile("exemple/js-min.js", min_c, 0777)
 }

@@ -5,5 +5,5 @@ import (
 )
 
 func MinCSS(s []byte) []byte {
-	return []byte(strings.Replace(strings.Replace(string(s), " ", "", -1), "\n", "", -1))
+	return []byte(strings.Replace(string(s), "\n", " ", -1))
 }
